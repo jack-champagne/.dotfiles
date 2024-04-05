@@ -8,5 +8,6 @@
     texliveFull
     inkscape
     poppler_utils
+    nodejs-18_x
   ];
 }

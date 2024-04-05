@@ -40,8 +40,17 @@
     xwayland.enable = true;
   };
 
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg = {
+    icons.enable = true; 
+    portal = {
+      enable = true; 
+      extraPortals = [ 
+        pkgs.xdg-desktop-portal
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-hyprland
+      ];
+    };
+  }; 
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;
@@ -63,6 +72,7 @@
     description = "Jack Champagne";
     extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
     hashedPasswordFile = "/home/jack/.dotfiles/jack/hashed-password";
+    openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINf2zLY+Mi5eSNjR+DBoRr3GY+t6xfCpHxoWdimT7mh/ jackchampagne.r@gmail.com" ];
   };
 
   users.mutableUsers = false;
@@ -80,6 +90,7 @@
     pavucontrol
     wdisplays
     mkpasswd
+    win-virtio
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -93,10 +104,29 @@
   # List services that you want to enable:
   services.flatpak.enable = true;
 
-  virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      ovmf = {
+        packages = [ (pkgs.OVMF.override {
+          secureBoot = true;
+          tpmSupport = true;
+        }).fd];
+        enable = true;
+      };
+      swtpm.enable = true;
+    };
+  };
+
+  virtualisation.docker.enable = true;
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = { 
+    enable = true;
+    settings.PasswordAuthentication = false;
+    settings.KbdInteractiveAuthentication = false;
+    settings.PermitRootLogin = "no";
+  };
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 8888 ];

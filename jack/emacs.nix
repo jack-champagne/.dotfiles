@@ -1,11 +1,16 @@
 { config, pkgs, ... }:
 
 {
-  services.emacs.startWithUserSession = true;
+  services.emacs = { 
+    enable = true;
+    defaultEditor = true;
+    startWithUserSession = true;
+  };
+
   programs.emacs = {
     enable = true;
     package = pkgs.emacs29-pgtk;
-    extraPackages = epkgs: with epkgs; [ use-package ivy all-the-icons doom-modeline doom-themes rainbow-delimiters which-key ivy-rich counsel helpful general rustic lsp-mode lsp-ui company yasnippet lsp-java flycheck ];
+    extraPackages = epkgs: with epkgs; [ use-package ivy all-the-icons doom-modeline doom-themes rainbow-delimiters which-key ivy-rich counsel helpful general rustic lsp-mode lsp-ui company yasnippet lsp-java flycheck magit ];
     extraConfig = ''
       ;; (setq inhibit-startup-message t)
       

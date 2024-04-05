@@ -1,11 +1,14 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
+  # TODO: change ocrl into shell.nix thingy
   imports =
     [
       ./hypr.nix
-      # ./ocrl.nix
       ./emacs.nix
+      ./bash.nix
+      ./kitty.nix
+      ./ocrl.nix
     ];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -21,7 +24,12 @@
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
   home.stateVersion = "23.11"; # Please read the comment before changing.
- 
+
+
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "discord"
+    "vscode"
+  ]; 
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
@@ -50,8 +58,17 @@
     gparted
     waypipe
     pulseaudio # just for pulseaudio utilities for piping audio over the network
-    obs-studio
     btop
+    # docker
+    xdg-utils
+    wayshot
+    slurp
+    # kde-cli-tools
+    cloudflared
+    discord
+    vorta
+    gh
+    jq
   ];
 
   # Add themeing options (currently just gtk) - ripped from https://github.com/NixOS/nixpkgs/issues/207339#issuecomment-1374497558
@@ -63,10 +80,14 @@
     };
   };
 
-  # some other dark theming stuffs - taken from 
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
+  
+  # some other dark theming stuffs - taken from https://nixos.wiki/wiki/GNOME
+  dconf = {
+    enable = true;
+    settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+      };
     };
   };
 
@@ -100,15 +121,6 @@
     # EDITOR = "emacs";
   };
 
-  # Bash dotfiles
-  programs.bash = {
-    enable = true;
-    shellAliases = {
-      ll = "ls -lah";
-      ".." = "cd ..";
-    };
-  };
-
   programs.gpg = {
     enable = true;
     # mutableKeys = false;
@@ -122,6 +134,15 @@
       init = {
         defaultBranch = "main";
       };
+      credential.helper = "store";
+    };
+  };
+
+  xdg = {
+    enable = true;
+    desktopEntries.emx = {
+      exec = "/home/jack/.nix-profile/bin/emacsclient -c";
+      name = "emx";
     };
   };
 
