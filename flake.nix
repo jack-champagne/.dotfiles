@@ -4,8 +4,8 @@
   # See here: https://librephoenix.com/2024-02-10-using-both-stable-and-unstable-packages-on-nixos-at-the-same-time
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager/release-23.11";
+    nixpkgs.url = "nixpkgs/nixos-24.05";
+    home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -13,7 +13,17 @@
     let
       system = "x86_64-linux";
       lib = nixpkgs.lib;
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = import nixpkgs { 
+        inherit system; 
+        config = { 
+          allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+            "discord"
+            "vscode"
+            "slack"
+            "spotify"
+          ];
+        }; 
+      };
     in {
       nixosConfigurations = {
         nixbox = lib.nixosSystem {

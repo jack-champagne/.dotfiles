@@ -12,6 +12,7 @@ in
 
 {
   home.packages = with pkgs; [
+    wayland-scanner
     bemenu
     hyprpaper
   ];
@@ -113,7 +114,9 @@ in
 
       bindr = [
         "$mod, P, execr, pkill bemenu-run || bemenu-run"
-      ]; 
+      ];
+
+      debug.disable_logs = false; 
     };
   };
 }

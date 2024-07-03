@@ -25,11 +25,6 @@
   # release notes.
   home.stateVersion = "23.11"; # Please read the comment before changing.
 
-
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "discord"
-    "vscode"
-  ]; 
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
@@ -69,6 +64,12 @@
     vorta
     gh
     jq
+    slack
+    obsidian
+    vscode
+    obs-studio 
+    obs-studio-plugins.wlrobs
+    kdenlive
   ];
 
   # Add themeing options (currently just gtk) - ripped from https://github.com/NixOS/nixpkgs/issues/207339#issuecomment-1374497558

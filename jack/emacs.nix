@@ -10,7 +10,7 @@
   programs.emacs = {
     enable = true;
     package = pkgs.emacs29-pgtk;
-    extraPackages = epkgs: with epkgs; [ use-package ivy all-the-icons doom-modeline doom-themes rainbow-delimiters which-key ivy-rich counsel helpful general rustic lsp-mode lsp-ui company yasnippet lsp-java flycheck magit ];
+    extraPackages = epkgs: with epkgs; [ use-package ivy all-the-icons doom-modeline doom-themes rainbow-delimiters which-key ivy-rich counsel helpful general rustic lsp-mode lsp-ui company yasnippet lsp-java flycheck magit vterm julia-repl];
     extraConfig = ''
       ;; (setq inhibit-startup-message t)
       
@@ -36,7 +36,13 @@
       (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                                ("org" . "https://orgmode.org/elpa/")
                                ("elpa" . "https://elpa.gnu.org/packages/")))
-      
+
+      (unless (package-installed-p 'quelpa)
+        (with-temp-buffer
+        (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+        (eval-buffer)
+        (quelpa-self-upgrade)))
+
       (package-initialize)
       (unless package-archive-contents
        (package-refresh-contents))
@@ -251,6 +257,40 @@
       )
       
       (use-package flycheck)
+
+
+      (quelpa '(lsp-julia :fetcher github
+                    :repo "non-Jedi/lsp-julia"
+                    :files (:defaults "languageserver")))
+
+      (use-package lsp-julia
+       :config
+       (setq lsp-julia-default-environment "~/.julia/environments/v1.6"))
+
+      (add-hook 'julia-mode-hook #'lsp-mode)
+
+      (use-package vterm
+       :ensure t)
+
+      (use-package julia-mode
+  :ensure t)
+
+      (use-package julia-repl
+       :ensure t
+       :hook (julia-mode . julia-repl-mode)
+
+       :init
+       (setenv "JULIA_NUM_THREADS" "8")
+
+       :config
+       ;; Set the terminal backend
+       (julia-repl-set-terminal-backend 'vterm)
+  
+       ;; Keybindings for quickly sending code to the REPL
+       (define-key julia-repl-mode-map (kbd "<C-RET>") 'my/julia-repl-send-cell)
+       (define-key julia-repl-mode-map (kbd "<M-RET>") 'julia-repl-send-line)
+       (define-key julia-repl-mode-map (kbd "<S-return>") 'julia-repl-send-buffer))
+
     '';
   };
 }

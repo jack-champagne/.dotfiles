@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    julia-lts
+    julia
     jupyter
     pandoc
     texliveFull
