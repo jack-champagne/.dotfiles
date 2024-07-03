@@ -21,6 +21,7 @@
             "vscode"
             "slack"
             "spotify"
+            "obsidian"
           ];
         }; 
       };

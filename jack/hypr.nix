@@ -79,7 +79,7 @@ in
         ];
       };
 
-      master = { new_is_master = true; };
+      master = { new_status = "master"; };
  
       misc = { 
         vfr = true;
