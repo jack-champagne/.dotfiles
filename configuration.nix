@@ -16,6 +16,15 @@
 
   boot.supportedFilesystems = [ "ntfs" ];
 
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    v4l2loopback
+  ];
+  boot.kernelModules = [ "v4l2loopback" ];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
+  security.polkit.enable = true;
+
   networking.hostName = "nixbox"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -91,6 +100,13 @@
     wdisplays
     mkpasswd
     win-virtio
+    (wrapOBS {
+      plugins = with pkgs.obs-studio-plugins; [
+        wlrobs
+        obs-backgroundremoval
+        obs-pipewire-audio-capture
+      ];
+    })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -104,6 +120,7 @@
   # List services that you want to enable:
   services.flatpak.enable = true;
 
+  virtualisation.spiceUSBRedirection.enable = true;
   virtualisation.libvirtd = {
     enable = true;
     qemu = {

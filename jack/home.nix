@@ -67,9 +67,8 @@
     slack
     obsidian
     vscode
-    obs-studio 
-    obs-studio-plugins.wlrobs
     kdenlive
+    gnome.nautilus
   ];
 
   # Add themeing options (currently just gtk) - ripped from https://github.com/NixOS/nixpkgs/issues/207339#issuecomment-1374497558
